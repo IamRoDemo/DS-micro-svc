@@ -15,10 +15,11 @@ jobs:
 
       - name: Set up Git credentials
         run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
+          git config --global user.name "iamro"
+          git config --global user.email "iamro	@users.noreply.github.com"
+          
+          # Set remote URL with the token
+          git remote set-url origin https://iamro:$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@github.com/${{ github.repository }}.git
       - name: Get the latest tag
         id: get_tag
         run: |
