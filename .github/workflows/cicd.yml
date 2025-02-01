@@ -46,6 +46,3 @@ jobs:
           git push origin $new_tag
 
           echo "new_tag=$new_tag" >> $GITHUB_ENV
-
-      - name: Show new tag
-        run: echo "✅ Created new tag: ${{ env.new_tag }}"
