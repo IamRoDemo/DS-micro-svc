@@ -8,7 +8,8 @@ on:
 jobs:
   auto-tag:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write  
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -41,7 +42,7 @@ jobs:
 
           # Configure Git and push the new tag
           git tag $new_tag
-          git remote set-url origin https://iamro:${{ secrets.MY_GITHUB_PAT }}@github.com/${{ github.repository }}.git
+          #git remote set-url origin https://iamro:${{ secrets.MY_GITHUB_PAT }}@github.com/${{ github.repository }}.git
           echo "Pushing tag"
           git push origin $new_tag
 
