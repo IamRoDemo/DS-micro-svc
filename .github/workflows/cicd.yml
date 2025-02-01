@@ -18,15 +18,21 @@ jobs:
         run: |
           git fetch --tags
           # Get the latest tag matching the pattern v*-dev.*
-          latest_tag=$(git tag --list 'v1.1.0-dev.*' --sort=-v:refname | head -n 1)
+          latest_tag=$(git tag --list 'v*-dev.*' --sort=-v:refname | head -n 1)
           echo "Latest tag: $latest_tag"
+
+          # If no tag exists, start from v1.0.0-dev.0
+          if [ -z "$latest_tag" ]; then
+            latest_tag="v1.0.0-dev.0"
+          fi
+
           echo "latest_tag=$latest_tag" >> $GITHUB_ENV
 
       - name: Bump the dev version
         id: bump_tag
         run: |
-          # Extract the numeric part after 'dev.'
-          base_tag=$(echo "$latest_tag" | sed -E 's/v1\.1\.1-dev\.[0-9]+/\1/')
+          # Extract base version and dev number using shell tools
+          base_tag=$(echo "$latest_tag" | cut -d'-' -f1)
           dev_number=$(echo "$latest_tag" | grep -oP '(?<=-dev\.)\d+')
 
           # Increment the dev number
