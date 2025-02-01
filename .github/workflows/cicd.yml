@@ -1,0 +1,51 @@
+name: CICD Pipeline
+
+on:
+  push:
+    branches:
+      - main        # Trigger only on pushes to the 'main' branch
+
+jobs:
+  auto-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get the latest tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          # Get the latest tag matching the pattern v*-dev.*
+          latest_tag=$(git tag --list 'v1.1.0-dev.*' --sort=-v:refname | head -n 1)
+          echo "Latest tag: $latest_tag"
+          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
+
+      - name: Bump the dev version
+        id: bump_tag
+        run: |
+          # Extract the numeric part after 'dev.'
+          base_tag=$(echo "$latest_tag" | sed -E 's/(v[0-9]+\.[0-9]+\.[0-9]+)-dev\.[0-9]+/\1/')
+          dev_number=$(echo "$latest_tag" | grep -oP '(?<=-dev\.)\d+')
+
+          # Increment the dev number
+          if [ -z "$dev_number" ]; then
+            new_dev_number=0
+          else
+            new_dev_number=$((dev_number + 1))
+          fi
+
+          new_tag="${base_tag}-dev.${new_dev_number}"
+          echo "New tag: $new_tag"
+
+          # Configure Git and push the new tag
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag $new_tag
+          git push origin $new_tag
+
+          echo "new_tag=$new_tag" >> $GITHUB_ENV
+
+      - name: Show new tag
+        run: echo "✅ Created new tag: ${{ env.new_tag }}"
