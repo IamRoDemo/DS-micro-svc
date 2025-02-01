@@ -46,7 +46,9 @@ jobs:
           echo "New tag: $new_tag"
 
           # Configure Git and push the new tag
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          
           git tag $new_tag
-          git push --tags
+          git push -f origin $new_tag
 
           echo "new_tag=$new_tag" >> $GITHUB_ENV
