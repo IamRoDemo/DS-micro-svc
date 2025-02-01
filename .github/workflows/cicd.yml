@@ -13,18 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Git credentials
-        run: |
-          git config --global user.name "iamro"
-          git config --global user.email "iamro@users.noreply.github.com"
-          
-          # Set remote URL with the token
-          git remote set-url origin https://iamro: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@github.com/${{ github.repository }}.git
-      - name: Debug Git authentication
-        run: |
-          git remote -v
-          git config --list
-
       - name: Get the latest tag
         id: get_tag
         run: |
