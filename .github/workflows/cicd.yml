@@ -41,12 +41,7 @@ jobs:
 
           # Configure Git and push the new tag
           git tag $new_tag
-          git config --global user.name "iamro"
-          git remote set-url origin https://github.com/IamRoDemo/DS-micro-svc.git
+          git push https://iamro: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@github.com/IamRoDemo/DS-micro-svc.git --tags
 
-          
-          git remote -v
-          git config --list
-          git push origin $new_tag -f
 
           echo "new_tag=$new_tag" >> $GITHUB_ENV
