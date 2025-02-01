@@ -41,6 +41,9 @@ jobs:
 
           # Configure Git and push the new tag
           git tag $new_tag
+          git remote set-url origin https://YOUR_GITHUB_USERNAME:${{ secrets.MY_GITHUB_PAT }}@github.com/${{ github.repository }}.git
+
+          
           git remote -v
           git config --list
           git push origin $new_tag -f
