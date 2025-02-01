@@ -48,6 +48,6 @@ jobs:
 
           # Configure Git and push the new tag
           git tag $new_tag
-          git push --tags
+          git push origin $new_tag -f
 
           echo "new_tag=$new_tag" >> $GITHUB_ENV
