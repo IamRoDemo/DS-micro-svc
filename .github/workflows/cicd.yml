@@ -46,9 +46,7 @@ jobs:
           echo "New tag: $new_tag"
 
           # Configure Git and push the new tag
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git tag $new_tag
-          git push origin $new_tag
+          git push --tags
 
           echo "new_tag=$new_tag" >> $GITHUB_ENV
