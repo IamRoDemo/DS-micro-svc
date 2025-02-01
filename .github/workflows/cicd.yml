@@ -1,4 +1,4 @@
-name: CICD Pipeline
+name: CI
 
 on:
   push:
@@ -13,29 +13,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Git credentials
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
       - name: Get the latest tag
         id: get_tag
         run: |
           git fetch --tags
+          # Get the latest tag matching the pattern v*-dev.*
           latest_tag=$(git tag --list 'v*-dev.*' --sort=-v:refname | head -n 1)
-          [ -z "$latest_tag" ] && latest_tag="v1.0.0-dev.0"
+          echo "Latest tag: $latest_tag"
           echo "latest_tag=$latest_tag" >> $GITHUB_ENV
 
       - name: Bump the dev version
+        id: bump_tag
         run: |
+          # Extract base version and dev number using shell tools
           base_tag=$(echo "$latest_tag" | cut -d'-' -f1)
           dev_number=$(echo "$latest_tag" | grep -oP '(?<=-dev\.)\d+')
-          new_dev_number=$(( ${dev_number:-0} + 1 ))
-          new_tag="${base_tag}-dev.${new_dev_number}"
 
+          # Increment the dev number
+          if [ -z "$dev_number" ]; then
+            new_dev_number=0
+          else
+            new_dev_number=$((dev_number + 1))
+          fi
+
+          new_tag="${base_tag}-dev.${new_dev_number}"
+          echo "New tag: $new_tag"
+
+          # Configure Git and push the new tag
           git tag $new_tag
-          git push origin $new_tag  # ✅ Push with authentication
+          git push --tags
 
           echo "new_tag=$new_tag" >> $GITHUB_ENV
-
